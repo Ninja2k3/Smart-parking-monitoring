@@ -1,0 +1,10 @@
+.park{
+    width:100%;
+    background-color:#00000054;
+    z-index:1;
+    position:absolute;
+    margin-top: 1rem;
+    color:white;
+    padding:1rem 1rem 1rem 1rem;
+    border-radius:10px
+}

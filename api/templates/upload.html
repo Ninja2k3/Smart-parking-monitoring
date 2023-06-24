@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+{% extends "layout.html" %}
+{% block body %}
+
+<html>
+    <head><title>students</title>
+        <link rel="stylesheet" href="bootstrap.css" />
+        <link
+          href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+          rel="stylesheet"
+          id="bootstrap-css"
+        />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+        
+    </head>
+
+    <style>
+        
+        .mobile-container {
+          max-width: 480px;
+          margin: auto;
+          height: 500px;
+          color: white;
+          border-radius: 10px;
+        }
+        
+        .topnav {
+          overflow: hidden;
+          background-color: #333;
+          position: relative;
+        }
+        
+        .topnav #myLinks {
+          display: none;
+        }
+        
+        .topnav a {
+          color: white;
+          padding: 14px 16px;
+          text-decoration: none;
+          font-size: 17px;
+          display: block;
+        }
+        
+        .topnav a.icon {
+          background: black;
+          display: block;
+          position: absolute;
+          right: 0;
+          top: 0;
+        }
+        
+        .topnav a:hover {
+          background-color: #ddd;
+          color: black;
+        }
+        
+        .active {
+          background-color: #d63384;
+          color: white;
+        }
+        </style>
+<body>
+    
+    <div class="mobile-container">
+
+        <!-- Top Navigation Menu -->
+        <div class="topnav">
+            <a href="/home/{{username}}/park" class="active">Parking Spotter</a>
+            <div id="myLinks">
+            <a href="/home/{{username}}/park">Park</a>
+            <a href="/home/{{username}}/upload">Upload</a>
+            <a href="/home/{{username}}/wallet">Wallet</a>
+        </div>
+          <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+            <i class="fa fa-bars"></i>
+          </a>
+        </div>
+        
+
+    <div class="collapse" id="navbarToggleExternalContent2">
+        <ul class="bg-light shadow-3 py-2 px-3">
+            <li class="btn btn-link btn-block m-0 p-2 text-start text-dark">home</li>
+            <li class="btn btn-link btn-block m-0 p-2 text-start text-dark">Features</li>
+            <li class="btn btn-link btn-block m-0 p-2 text-start text-dark">Pricing</li>
+        </ul>
+    </div>
+
+      <a href="/home/{{username}}/upload/quest">
+    <button
+      style="margin-left:6rem"
+  class=" mt-4 ml-32 flex select-none items-center gap-3 rounded-lg bg-gradient-to-tr from-pink-600 to-pink-400 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+  type="button"
+  data-ripple-light="true"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="2"
+    stroke="currentColor"
+    aria-hidden="true"
+    class="h-5 w-5"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"
+    ></path>
+  </svg>
+  Upload location
+</button>
+</a>
+
+<div class="mt-6 font-regular relative block w-full rounded-lg bg-pink-500 p-4 text-base leading-5 text-white opacity-100">
+MY LOCATIONS
+  </div>
+{%for i in range(0, x)%}
+      <br>
+      <div class="park" style="">
+                <div class="relative flex w-96 flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
+                    <div class="relative mx-4 h-56 overflow-hidden rounded-xl bg-blue-gray-500 bg-clip-border text-white shadow-lg shadow-blue-gray-500/40">
+                        <img
+                        src={{loc[6*i+3]}}
+                        alt="img-blur-shadow"
+                        layout="fill"
+                        class="mb--4"
+                      />
+                    </div>
+                    <div class="p-6">
+                      <h5 class="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
+                        {{loc[6*i+1]}}
+                    </h5>
+                      <p class="block font-sans text-base font-light leading-relaxed text-inherit antialiased">
+                        Cover charge : {{loc[6*i+4]}}
+                        <br>
+                        Hourly charge : {{loc[6*i+5]}}
+                        <br>
+                        Offered by : {{loc[6*i+0]}}
+                      </p>
+                    </div>
+                  
+                  </div>
+            </div>
+            {%endfor%}
+     
+            <script>
+                function myFunction() {
+                  var x = document.getElementById("myLinks");
+                  if (x.style.display === "block") {
+                    x.style.display = "none";
+                  } else {
+                    x.style.display = "block";
+                  }
+                }
+                </script>
+</body>
+<script src="node_modules/@material-tailwind/scripts/collapse.js"></script>
+
+</html>
+
+{% endblock %}

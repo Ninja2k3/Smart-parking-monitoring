@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@material-tailwind/html": "^2.0.0",
+    "geolib": "^3.3.4"
+  }
+}

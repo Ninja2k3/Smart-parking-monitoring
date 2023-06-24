@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+{% extends "layout.html" %}
+{% block body %}
+
+<html>
+    <head><title>students</title>
+        <link rel="stylesheet" href="bootstrap.css" />
+        <link
+          href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+          rel="stylesheet"
+          id="bootstrap-css"
+        />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+        
+    </head>
+    
+    <style>
+        
+      .mobile-container {
+        max-width: 480px;
+        margin: auto;
+        height: 500px;
+        color: white;
+        border-radius: 10px;
+      }
+      
+      .topnav {
+        overflow: hidden;
+        background-color: #333;
+        position: relative;
+      }
+      
+      .topnav #myLinks {
+        display: none;
+      }
+      
+      .topnav a {
+        color: white;
+        padding: 14px 16px;
+        text-decoration: none;
+        font-size: 17px;
+        display: block;
+      }
+      
+      .topnav a.icon {
+        background: black;
+        display: block;
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+      
+      .topnav a:hover {
+        background-color: #ddd;
+        color: black;
+      }
+      
+      .active {
+        background-color: #d63384;
+        color: white;
+      }
+      </style>
+<body>
+   
+  <div class="mobile-container">
+
+    <!-- Top Navigation Menu -->
+    <div class="topnav">
+      <a href="/home/{{username}}/park" class="active">Parking Spotter</a>
+      <div id="myLinks">
+        <a href="/home/{{username}}/park">Park</a>
+        <a href="/home/{{username}}/upload">Upload</a>
+        <a href="/home/{{username}}/wallet">Wallet</a>
+      </div>
+      <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+        <i class="fa fa-bars"></i>
+      </a>
+    </div>
+    
+
+<div class="collapse" id="navbarToggleExternalContent2">
+    <ul class="bg-light shadow-3 py-2 px-3">
+        <li class="btn btn-link btn-block m-0 p-2 text-start text-dark">home</li>
+        <li class="btn btn-link btn-block m-0 p-2 text-start text-dark">Features</li>
+        <li class="btn btn-link btn-block m-0 p-2 text-start text-dark">Pricing</li>
+    </ul>
+</div>
+<br>
+
+
+      <div style="display:flex;flex-wrap:wrap">
+
+
+      {%for i in range(0, x)%}
+      <br>
+      <div class="park">
+                <div class="relative flex w-96 flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
+                    <div class="relative mx-4 h-56 overflow-hidden rounded-xl bg-blue-gray-500 bg-clip-border text-white shadow-lg shadow-blue-gray-500/40">
+                        <img
+                        src={{loc[6*i+3][0]}}
+                        alt="img-blur-shadow"
+                        layout="fill"
+                        class="mb--4"
+                      />
+                    </div>
+                    <div class="p-6">
+                      <h5 class="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
+                        {{loc[6*i+1][0]}}
+                    </h5>
+                      <p class="block font-sans text-base font-light leading-relaxed text-inherit antialiased">
+                        Cover charge : {{loc[6*i+4][0]}}
+                        <br>
+                        Hourly charge : {{loc[6*i+5][0]}}
+                        <br>
+                        Offered by : {{loc[6*i+0][0]}}
+                        <br>
+                        <br>
+                        Coordinates : {{coordinates[i][0],coordinates[i][1]}}
+                        <br>
+                        Location :
+                        <br>
+                        <iframe src={{loc[6*i+2][0]}} width="320" height="240" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                      </p>
+                    </div>
+                    <div class="p-6 pt-0">
+                      <button
+                        class="select-none rounded-lg bg-pink-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                        type="button"
+                        data-ripple-light="true"
+                      >
+                        Park
+                      </button>
+                    </div>
+                  </div>
+            </div>
+            {%endfor%}
+          </div>
+          <script>
+            function myFunction() {
+              var x = document.getElementById("myLinks");
+              if (x.style.display === "block") {
+                x.style.display = "none";
+              } else {
+                x.style.display = "block";
+              }
+            }
+
+                        function distance(lat1, lon1, lat2, lon2, unit) {
+                          var radlat1 = Math.PI * lat1/180
+                          var radlat2 = Math.PI * lat2/180
+                          var radlon1 = Math.PI * lon1/180
+                          var radlon2 = Math.PI * lon2/180
+                          var theta = lon1-lon2
+                          var radtheta = Math.PI * theta/180
+                          var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+                          dist = Math.acos(dist)
+                          dist = dist * 180/Math.PI
+                          dist = dist * 60 * 1.1515
+                          if (unit=="K") { dist = dist * 1.609344 }
+                          if (unit=="N") { dist = dist * 0.8684 }
+                          return dist
+                      }        
+
+                      
+                      navigator.geolocation.getCurrentPosition(setPosition);
+
+
+                      function setPosition(position) {
+                        const selfc = [position.coords.latitude,position.coords.longitude]
+                        const distarr = []
+                        {%for i in range(0, x)%}
+                        distarr[{{i}}] = distance(selfc[0],selfc[1],{{coordinates[i][0]}},{{coordinates[i][1]}},"K")
+                        console.log(distarr)
+                        {%endfor%}
+                        
+                      
+                      }
+
+                      
+            </script>
+</body>
+</html>
+
+{% endblock %}

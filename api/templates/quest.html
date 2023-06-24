@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+{% extends "layout.html" %}
+{% block body %}
+
+<html>
+    <head><title>students</title>
+        <link rel="stylesheet" href="bootstrap.css" />
+        <link
+          href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+          rel="stylesheet"
+          id="bootstrap-css"
+        />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <script src="https://cdn.tailwindcss.com"></script>
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+        
+    </head>
+
+        
+    <style>
+        
+        .mobile-container {
+          max-width: 480px;
+          margin: auto;
+          height: 500px;
+          color: white;
+          border-radius: 10px;
+        }
+        
+        .topnav {
+          overflow: hidden;
+          background-color: #333;
+          position: relative;
+        }
+        
+        .topnav #myLinks {
+          display: none;
+        }
+        
+        .topnav a {
+          color: white;
+          padding: 14px 16px;
+          text-decoration: none;
+          font-size: 17px;
+          display: block;
+        }
+        
+        .topnav a.icon {
+          background: black;
+          display: block;
+          position: absolute;
+          right: 0;
+          top: 0;
+        }
+        
+        .topnav a:hover {
+          background-color: #ddd;
+          color: black;
+        }
+        
+        .active {
+          background-color: #d63384;
+          color: white;
+        }
+        </style>
+
+<body>
+  
+    <div class="mobile-container">
+
+        <!-- Top Navigation Menu -->
+        <div class="topnav">
+          <a href="/home/{{usern}}/park" class="active">Parking Spotter</a>
+          <div id="myLinks">
+            <a href="/home/{{usern}}/park">Park</a>
+            <a href="/home/{{usern}}/upload">Upload</a>
+            <a href="/home/{{usern}}/wallet">Wallet</a>
+          </div>
+          <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+            <i class="fa fa-bars"></i>
+          </a>
+        </div>
+        
+  <br>
+  <h2 class="ml-4">{{usern}}, here you can upload a location </h2>
+
+  <div style="width:480px;background-color:#00000054;z-index=1;position:absolute;margin-top:1rem;color:white;padding:1rem 1rem 1rem 1rem;border-radius:10px">
+    
+  
+    
+    <form action='/home/<username>/upload/quest' method="POST" id='signupform'>
+   
+        <div class="form-group">
+            <label>Username</label>
+         <input type="text" name="username" value={{usern}} class="form-control" required readonly/>
+          </div>
+
+    <div class="form-group">
+      <label>Location Name</label>
+   <input type="text" name="locationName" placeholder='Location name' class="form-control" required />
+    </div>
+    
+       
+    <div class="form-group">
+      
+        <label>Location</label>
+        <input type="text" name="location" placeholder='Location' class="form-control" required  />
+      </div>
+   
+      <div class="form-group">
+      
+        <label>Image URL</label>
+        <input type="text" name="imageURL" placeholder='URL' class="form-control" required  />
+      </div>
+
+      <div class="form-group">
+      
+        <label>Cover Charge</label>
+        <input type="number" name="coverCharge" placeholder='Cover charge' class="form-control" required  />
+      </div>
+
+      <div class="form-group">
+      
+        <label>Hourly charge</label>
+        <input type="number" name="hourlyCharge" placeholder='Hourly charge' class="form-control" required  />
+      </div>
+   
+   
+   
+    <button type="submit" class="btn btn-primary" style="background-color:blue">Submit</button>
+    
+    
+   
+
+  </form>
+  </div>
+
+  <div class="mx-auto max-w-screen-md py-12">
+    <div class="relative mb-12 flex flex-col overflow-hidden rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
+      
+    </div>
+
+    <script>
+        function myFunction() {
+          var x = document.getElementById("myLinks");
+          if (x.style.display === "block") {
+            x.style.display = "none";
+          } else {
+            x.style.display = "block";
+          }
+        }
+        </script>
+ 
+</body>
+</html>
+
+{% endblock %}
