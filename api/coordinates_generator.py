@@ -65,6 +65,8 @@ class CoordinatesGenerator:
         self.click_count = 0
 
         coordinates = np.array(self.coordinates)
+        
+        print(coordinates)
 
         self.output.write("-\n          id: " + str(self.ids) + "\n          coordinates: [" +
                           "[" + str(self.coordinates[0][0]) + "," + str(self.coordinates[0][1]) + "]," +

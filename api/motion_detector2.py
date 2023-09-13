@@ -3,21 +3,24 @@ import numpy as np
 import logging
 from drawing_utils import draw_contours
 from colors import COLOR_GREEN, COLOR_WHITE, COLOR_BLUE
-import yaml
+
 
 class MotionDetector:
     LAPLACIAN = 1.4
     DETECT_DELAY = 1
 
-    def __init__(self, video, coordinates):
+    def __init__(self, video, coordinates, start_frame):
         self.video = video
         self.coordinates_data = coordinates
+        self.start_frame = start_frame
         self.contours = []
         self.bounds = []
         self.mask = []
         self.counter = 0
     def detect_motion(self):
         capture = open_cv.VideoCapture(self.video)
+        capture.set(open_cv.CAP_PROP_POS_FRAMES, self.start_frame)
+
         coordinates_data = self.coordinates_data
         logging.debug("coordinates data: %s", coordinates_data)
 
@@ -51,52 +54,52 @@ class MotionDetector:
         statuses = [False] * len(coordinates_data)
         times = [None] * len(coordinates_data)
 
-        while True:
+        while capture.isOpened():
             result, frame = capture.read()
+            if frame is None:
+                break
+
             if not result:
-                capture.set(open_cv.CAP_PROP_POS_FRAMES, 0)
-                continue
-            else:
-                blurred = open_cv.GaussianBlur(frame.copy(), (5, 5), 3)
-                grayed = open_cv.cvtColor(blurred, open_cv.COLOR_BGR2GRAY)
-                new_frame = frame.copy()
-                logging.debug("new_frame: %s", new_frame)
+                raise CaptureReadError("Error reading video capture on frame %s" % str(frame))
 
-                position_in_seconds = capture.get(open_cv.CAP_PROP_POS_MSEC) / 1000.0
+            blurred = open_cv.GaussianBlur(frame.copy(), (5, 5), 3)
+            grayed = open_cv.cvtColor(blurred, open_cv.COLOR_BGR2GRAY)
+            new_frame = frame.copy()
+            logging.debug("new_frame: %s", new_frame)
 
-                for index, c in enumerate(coordinates_data):
-                    status = self.__apply(grayed, index, c)
+            position_in_seconds = capture.get(open_cv.CAP_PROP_POS_MSEC) / 1000.0
 
-                    if times[index] is not None and self.same_status(statuses, index, status):
+            for index, c in enumerate(coordinates_data):
+                status = self.__apply(grayed, index, c)
+
+                if times[index] is not None and self.same_status(statuses, index, status):
+                    times[index] = None
+                    continue
+
+                if times[index] is not None and self.status_changed(statuses, index, status):
+                    if position_in_seconds - times[index] >= MotionDetector.DETECT_DELAY:
+                        statuses[index] = status
                         times[index] = None
-                        continue
+                    continue
 
-                    if times[index] is not None and self.status_changed(statuses, index, status):
-                        if position_in_seconds - times[index] >= MotionDetector.DETECT_DELAY:
-                            statuses[index] = status
-                            times[index] = None
-                        continue
+                if times[index] is None and self.status_changed(statuses, index, status):
+                    times[index] = position_in_seconds
 
-                    if times[index] is None and self.status_changed(statuses, index, status):
-                        times[index] = position_in_seconds
+            for index, p in enumerate(coordinates_data):
+                coordinates = self._coordinates(p)
 
-                for index, p in enumerate(coordinates_data):
-                    coordinates = self._coordinates(p)
-
-                    color = COLOR_GREEN if statuses[index] else COLOR_BLUE
-                    draw_contours(new_frame, coordinates, str(p["id"] + 1), COLOR_WHITE, color)
-                
-                counter = statuses
-                print(counter.count(True))
-                ret,buffer = open_cv.imencode('.jpg',new_frame)
-                new_frame = buffer.tobytes()
-                yield(b'--frame\r\n'
-                b'Content-Type: image/jpeg\r\n\r\n'+new_frame+b'\r\n')
-                #k = open_cv.waitKey(1)
-                #if k == ord("q"):
-                #    break
-            #capture.release()
-            #open_cv.destroyAllWindows()
+                color = COLOR_GREEN if statuses[index] else COLOR_BLUE
+                draw_contours(new_frame, coordinates, str(p["id"] + 1), COLOR_WHITE, color)
+            
+            counter = statuses
+            print(counter.count(True))
+            
+            open_cv.imshow(str(self.video), new_frame)
+            k = open_cv.waitKey(1)
+            if k == ord("q"):
+                break
+        capture.release()
+        open_cv.destroyAllWindows()
 
     def __apply(self, grayed, index, p):
         coordinates = self._coordinates(p)

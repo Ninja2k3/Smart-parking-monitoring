@@ -6,6 +6,8 @@ from motion_detector import MotionDetector
 from colors import *
 import logging
 import pyrebase
+import cv2
+import numpy as np
 
 config = {
     "apiKey": "AIzaSyCRvuaXLQAW-PZJ3H72wZdSTvJDisLsVOQ",
@@ -41,7 +43,6 @@ def feeder(image_file,data_file,video_file,start_frame,c):
         points = yaml.load(data)
         detector = MotionDetector(video_file, points, int(start_frame))
         detector.detect_motion()
-        monitor['Co'] = detector.counter
 
 
 app = Flask(__name__)
@@ -62,11 +63,6 @@ def test():
     out = db.child('Sensor').get("out").val()['out']
     return render_template('test.html',out=out)
 
-@app.route('/video',methods=['GET','POST'])
-def video():
-    return Response(feeder('images/parking_lot_1.png','data/coordinates_1.y','videos/parking_lot_1.mp4',400), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-    
 @app.route('/login',methods=['GET','POST'])
 def login():
     if request.method=='POST':
@@ -124,15 +120,68 @@ def home(username):
         if out==2:
             out='?'
             feeder('images/parking_lot_1.png','data/coordinates_1.y','videos/parking_lot_1.mp4',400,0)
+            
 
     return render_template('home.html',username=username,loc=loc,x=int((len(loc)/6)),coordinates=coordinates,out=out)
-       
 
+def _coordinates(p):
+    return np.array(p["coordinates"])
+
+#cap = cv2.VideoCapture('F:/Programming/EL/Smart-parking-monitoring/api/videos/parking_lot_1.mp4')
+#md = MotionDetector('videos/parking_lot_1.mp4','data/coordinates_1.y')
+
+with open('data/coordinates_1.y', "r") as data:
+    points = yaml.load(data)
+    md = MotionDetector('videos/parking_lot_1.mp4',points)
+
+def generate_frames():
+    md.detect_motion()
+    '''while True:
+        success,frame = cap.read()
+        if not success:
+            print('no video')
+            cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+            continue
+        else:
+            ret,buffer = cv2.imencode('.jpg',frame)
+            frame = buffer.tobytes()
+        yield(b'--frame\r\n'
+              b'Content-Type: image/jpeg\r\n\r\n'+frame+b'\r\n')
+              points = yaml.load('data/coordinates_1.y')
+    contours = []
+    bounds = []
+    m=[]
+    for p in points:
+        coordinates = _coordinates(p)
+        rect = cv2.boundingRect(coordinates)
+        new_coordinates = coordinates.copy()
+        new_coordinates[:, 0] = coordinates[:, 0] - rect[0]
+        new_coordinates[:, 1] = coordinates[:, 1] - rect[1]
+        contours.append(coordinates)
+        bounds.append(rect)
+        mask = cv2.drawContours(
+                np.zeros((rect[3], rect[2]), dtype=np.uint8),
+                [new_coordinates],
+                contourIdx=-1,
+                color=255,
+                thickness=-1,
+                lineType=cv2.LINE_8)
+        mask = mask == 255
+        m.append(mask)
+        statuses = [False] * len(points)
+        times = [None] * len(points)
+        '''
+
+@app.route('/video',methods=['GET','POST'])
+def video():
+    return Response(md.detect_motion(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+    
 
 @app.route('/home/<username>/feed',methods=['GET','POST'])
 def feed(username):
-    c = 0
-    feeder('images/parking_lot_1.png','data/coordinates_1.y','videos/parking_lot_1.mp4',400,c)
+    #c = 0
+    #feeder('images/parking_lot_1.png','data/coordinates_1.y','videos/parking_lot_1.mp4',400,c)
     return render_template('feed.html',username=username)
        
        
