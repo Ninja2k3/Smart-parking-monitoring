@@ -4,6 +4,7 @@
 
 <html>
     <head><title>students</title>
+        <meta http-equiv="refresh" content="2">
         <link rel="stylesheet" href="bootstrap.css" />
         <link
           href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
@@ -94,7 +95,7 @@
 
 
       {%for i in range(0, x)%}
-      <br>
+      <br></br>
       <div class="park">
                 <div class="relative flex w-96 flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
                     <div class="relative mx-4 h-56 overflow-hidden rounded-xl bg-blue-gray-500 bg-clip-border text-white shadow-lg shadow-blue-gray-500/40">
@@ -108,6 +109,9 @@
                     <div class="p-6">
                       <h5 class="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
                         {{loc[6*i+1][0]}}
+                    </h5>
+                    <h5 class="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
+                      AVAILABLE SPOTS = {{out}}
                     </h5>
                       <p class="block font-sans text-base font-light leading-relaxed text-inherit antialiased">
                         Cover charge : {{loc[6*i+4][0]}}
@@ -125,13 +129,16 @@
                       </p>
                     </div>
                     <div class="p-6 pt-0">
+                      <a href="http://127.0.0.1:5000/home/{{username}}/feed" target="_blank">
                       <button
                         class="select-none rounded-lg bg-pink-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                         type="button"
                         data-ripple-light="true"
+                        target="_blank"
                       >
                         Park
                       </button>
+                      </a>
                     </div>
                   </div>
             </div>
@@ -174,7 +181,6 @@
                         distarr[{{i}}] = distance(selfc[0],selfc[1],{{coordinates[i][0]}},{{coordinates[i][1]}},"K")
                         console.log(distarr)
                         {%endfor%}
-                        
                       
                       }
 

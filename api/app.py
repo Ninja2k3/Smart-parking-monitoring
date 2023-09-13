@@ -1,6 +1,47 @@
 from flask import Flask,render_template,Response,request,redirect,url_for,flash
 from flask_pymongo import PyMongo
+import yaml
+from coordinates_generator import CoordinatesGenerator
+from motion_detector import MotionDetector
+from colors import *
+import logging
+import pyrebase
 
+config = {
+    "apiKey": "AIzaSyCRvuaXLQAW-PZJ3H72wZdSTvJDisLsVOQ",
+    "authDomain": "mcesel-226bf.firebaseapp.com",
+    "databaseURL": "https://mcesel-226bf-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "projectId": "mcesel-226bf",
+    "storageBucket": "mcesel-226bf.appspot.com",
+    "messagingSenderId": "426130337344",
+    "appId": "1:426130337344:web:b08cc855283f8afd7039a5",
+    "measurementId": "G-XBMHP9C12K"
+}
+
+firebase = pyrebase.initialize_app(config)
+db = firebase.database()
+
+email = ''
+
+
+def feeder(image_file,data_file,video_file,start_frame,c):
+    logging.basicConfig(level=logging.INFO)
+    monitor = mongo.db.counts.find_one()
+    print(monitor)
+    image_file = image_file
+    data_file = data_file
+    start_frame = start_frame
+
+    if image_file is not None:
+        with open(data_file, "w+") as points:
+            generator = CoordinatesGenerator(image_file, points, COLOR_RED)
+            generator.generate()
+
+    with open(data_file, "r") as data:
+        points = yaml.load(data)
+        detector = MotionDetector(video_file, points, int(start_frame))
+        detector.detect_motion()
+        monitor['Co'] = detector.counter
 
 
 app = Flask(__name__)
@@ -14,6 +55,16 @@ mongo = PyMongo(app)
 @app.route('/user/<id>')
 def user(id):
     return "<h1>hello{}</h1>".format(id)
+
+@app.route('/test')
+def test():
+    print(db.child('Sensor').get().val()['out'])
+    out = db.child('Sensor').get("out").val()['out']
+    return render_template('test.html',out=out)
+
+@app.route('/video',methods=['GET','POST'])
+def video():
+    return Response(feeder('images/parking_lot_1.png','data/coordinates_1.y','videos/parking_lot_1.mp4',400), mimetype='multipart/x-mixed-replace; boundary=frame')
 
     
 @app.route('/login',methods=['GET','POST'])
@@ -69,9 +120,23 @@ def home(username):
         loc.append([location['imageURL'],0])
         loc.append([location['coverCharge'],0])
         loc.append([location['hourlyCharge'],0])
+        out = db.child('Sensor').get("out").val()['out']
+        if out==2:
+            out='?'
+            feeder('images/parking_lot_1.png','data/coordinates_1.y','videos/parking_lot_1.mp4',400,0)
 
-    return render_template('home.html',username=username,loc=loc,x=int((len(loc)/6)),coordinates=coordinates)
+    return render_template('home.html',username=username,loc=loc,x=int((len(loc)/6)),coordinates=coordinates,out=out)
        
+
+
+@app.route('/home/<username>/feed',methods=['GET','POST'])
+def feed(username):
+    c = 0
+    feeder('images/parking_lot_1.png','data/coordinates_1.y','videos/parking_lot_1.mp4',400,c)
+    return render_template('feed.html',username=username)
+       
+       
+
 @app.route('/home/<username>/upload',methods=['GET','POST'])
 def upload(username):
     userlocations = mongo.db.locations.find({"username":username})
