@@ -112,6 +112,8 @@
                     </h5>
                     <h5 class="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
                       AVAILABLE SPOTS = {{out}}
+                      <br>
+                      BOOKED SPOTS = {{p}}
                     </h5>
                       <p class="block font-sans text-base font-light leading-relaxed text-inherit antialiased">
                         Cover charge : {{loc[6*i+4][0]}}
@@ -138,6 +140,18 @@
                       >
                         Park
                       </button>
+                      
+                      <form action='/home/{{username}}/park' method="POST" id='signupform'>
+                      <div class="form-group">
+                      <input type="hidden" name="username" value=1 class="form-control" required readonly/>
+                      
+                      <button type="submit" class="btn btn-primary" style="background-color:blue">Book</button>
+                      </form>
+                      </div>
+                      
+                      </div>
+              
+
                       </a>
                     </div>
                   </div>
