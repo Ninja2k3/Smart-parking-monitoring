@@ -16,6 +16,8 @@ We understood the code structure and the functions used, we used the coordinates
 We accomplished this by using the imencode file inbuilt in openCV. We encoded each frame of the video in '.jpg' format, added it to a buffer and streamed bytewise to our server in a way that our flask server could convniently stream the video file without delay. Lot of modifications had to be done in the coordinatesgenerator and motiondetector files. Motion detector  function was set to be called on the click of a button in our website.
 'coordinates_1.y' in the project is an example for a file which stores the coordinates. We can pass the preferred coordinates file as an argument to our function. We changed the code to store the marked coordinates until we explicitly decide to change it again by running the feeder.py file.
 
+The file named "EL.ino" holds the code fed to the sensor module to connect to a local network, access our firebase server and then feed the sensor data from it onto firebase.
+
 In summary,
 
 run feeder.py in api folder to pick coordinates
